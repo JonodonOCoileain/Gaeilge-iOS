@@ -5,64 +5,125 @@
 //  Created by Jónótdón Ó Coileáin on 5/21/23.
 //
 
+import AVKit
 import SwiftUI
 import CoreData
+#if os(OSX)
+  import AppleScriptObjC
+#endif
 
 struct ContentView: View {
+    let persistenceController = PersistenceController.shared
     @Environment(\.managedObjectContext) private var viewContext
 
     @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: true)],
+        sortDescriptors: [NSSortDescriptor(keyPath: \Entry.frequency, ascending: true)],
+        predicate: NSPredicate(format: "filename!=nil AND definition!=nil"),
         animation: .default)
-    private var items: FetchedResults<Item>
-
+    private var Entrys: FetchedResults<Entry>
+    @ObservedObject var player: Player = Player()
+    @State private var searchText = ""
+    @State private var localPronounciationOnly: Bool = false
+    @State private var playing: Bool = false
+    
     var body: some View {
         NavigationView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp!, formatter: itemFormatter)")
-                    } label: {
-                        Text(item.timestamp!, formatter: itemFormatter)
+            ZStack(alignment: .bottom) {
+                List() {
+                    ForEach(Entrys, id: \.self) { Entry in
+                            if Entry.filename?.contains(searchText) == true || Entry.definition?.contains(searchText) == true || searchText.count == 0 {
+                                HStack {
+                                    VStack(alignment: .leading) {
+                                        Text(Entry.filename ?? "No Entry")
+                                        Text(Entry.definition ?? "").foregroundColor(.green).padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
+                                    }
+                                    Spacer()
+                                    Button("fhuaimniú") {
+                                        guard let filename = Entry.filename, filename.count > 0 else { return }
+                                        DispatchQueue.global(qos: .userInitiated).async {
+                                            if let sound = Bundle.main.path(forResource: Entry.filename, ofType: "mp3") {
+                                                do {
+                                                    let fm = FileManager.default
+                                                    let newPath = URL.documents.appending(path: "file.mp3")
+                                                    if fm.fileExists(atPath: newPath.path) {
+                                                        try fm.removeItem(at: newPath)
+                                                    }
+                                                    try fm.copyItem(atPath: sound, toPath: newPath.path)
+                                                    self.player.playLocal(word: newPath)
+                                                } catch {
+                                                    print(error)
+                                                }
+                                            } else {
+                                                let arrayOfWords = filename.components(separatedBy: " ")
+                                                self.player.playOnWebsite(phrase: arrayOfWords)
+                                            }
+                                        }
+                                    }
+                                    .padding()
+                                    .background(Color(red: 0.2, green: 0.1, blue: 0.345789))
+                                    .foregroundColor(.white)
+                                    .clipShape(Capsule())
+                                    .modifier(DarkModeViewModifier())
+                                    .opacity(Entry.pronounceableLocally ? 1.0 : 0.0001)
+                                }
+                                .swipeActions {
+                                    if #available(OSX 10.14, *) {
+                                        Button("Send Correction") {
+                                            if let filename = Entry.filename, let encodedParams = "subject=\(filename)&body=The definition of \"\(filename)\" is:\n".addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) {
+                                                let email = "jonotdon.ocoileain@gmail.com"
+                                                if let url = URL(string: "mailto:\(email)?\(encodedParams)") {
+                                                    #if os(iOS)
+                                                    UIApplication.shared.open(url)
+                                                    #endif
+                                                    #if os(macOS)
+                                                    let service = NSSharingService(named: NSSharingService.Name.composeEmail)
+                                                    
+                                                    service?.recipients = ["jonotdon.ocoileain@gmail.com"]
+                                                    service?.subject = "\(filename)"
+                                                    service?.perform(withItems: ["The definition of \"\(filename)\" is:\n"])
+                                                    #endif
+                                                }
+                                            }
+                                        }
+                                        .tint(Color(red: 0.7, green: 0.7, blue: 1.0))
+                                    }
+                                }
+                                .padding(EdgeInsets(top: 0, leading: 0, bottom: 20, trailing: 0))
+                            }
                     }
                 }
-                .onDelete(perform: deleteItems)
+                .navigationTitle("Gaeilge")
+                .searchable(text: $searchText)
+                .disableAutocorrection(true)
             }
-            .toolbar {
-#if os(iOS)
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-#endif
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
-                }
-            }
-            Text("Select an item")
+            
         }
+            .environment(\.managedObjectContext, persistenceController.container.viewContext)
+            .onAppear() {
+                DispatchQueue.global(qos: .userInitiated).async {
+                    persistenceController.allEntriesData()
+                }
+            }
+            .navigationViewStyle(StackNavigationViewStyle())
     }
-
-    private func addItem() {
+    
+    private func addEntry() {
         withAnimation {
-            let newItem = Item(context: viewContext)
-            newItem.timestamp = Date()
+            let newEntry = Entry(context: viewContext)
+            newEntry.timestamp = Date()
 
             do {
                 try viewContext.save()
             } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
                 let nsError = error as NSError
                 fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
             }
         }
     }
 
-    private func deleteItems(offsets: IndexSet) {
+    private func deleteEntrys(offsets: IndexSet) {
         withAnimation {
-            offsets.map { items[$0] }.forEach(viewContext.delete)
+            offsets.map { Entrys[$0] }.forEach(viewContext.delete)
 
             do {
                 try viewContext.save()
@@ -76,15 +137,73 @@ struct ContentView: View {
     }
 }
 
-private let itemFormatter: DateFormatter = {
+public struct DarkModeViewModifier: ViewModifier {
+@AppStorage("isDarkMode") var isDarkMode: Bool = true
+public func body(content: Content) -> some View {
+    content
+        .environment(\.colorScheme, isDarkMode ? .dark : .dark)
+        .preferredColorScheme(isDarkMode ? .dark : .dark)
+    }
+}
+
+private let EntryFormatter: DateFormatter = {
     let formatter = DateFormatter()
     formatter.dateStyle = .short
     formatter.timeStyle = .medium
     return formatter
 }()
 
+class Player: ObservableObject {
+    private var audioPlayer: AVAudioPlayer?
+    private var player: AVPlayer?
+    
+    func playLocal(word: URL) {
+        if audioPlayer?.isPlaying != true {
+            do {
+                self.audioPlayer = try AVAudioPlayer(contentsOf: word)
+                self.audioPlayer?.volume = 1.0
+                self.audioPlayer?.play()
+            } catch {
+                print(error)
+            }
+        }
+    }
+    
+    func playOnWebsite(phrase: [String]) {
+        var items: [AVPlayerItem] = []
+        for word in phrase {
+            let urlString = "https://www.teanglann.ie/CanC/" + word
+            if let url = URL(string: urlString) {
+                let playerItem = AVPlayerItem(url: url)
+                items.append(playerItem)
+            }
+        }
+        self.player = AVQueuePlayer(items: items)
+        self.player?.volume = 1.0
+        self.player?.play()
+    }
+}
+
+extension URL {
+    static var documents: URL {
+        return FileManager
+            .default
+            .urls(for: .documentDirectory, in: .userDomainMask)[0]
+    }
+}
+
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
 }
+
+extension Bool {
+     static var mobileOS: Bool {
+         guard #available(iOS 10, *) else {
+             return false
+         }
+         // It's iOS 14 so return false.
+         return true
+     }
+ }
