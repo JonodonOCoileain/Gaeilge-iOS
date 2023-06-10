@@ -2,7 +2,7 @@ import sqlite3
 
 separators = ["plc", "adv", "n3", "n4", "nf","n1","n2","nf1","nf2","nf3","nf4","nf5","nm","nm1","nm2","nm3","nm4","nm5","vb","adjn","adj","nmbr", "n", "prep", "npl", "prefx","cnj","cphrs","pron", "nmadj", "nidiom", "nadj", "adjf"]
 
-sqliteConnection = sqlite3.connect('gaeilge.db')
+sqliteConnection = sqlite3.connect('GaeilgeAppData.db')
 
 cursor = sqliteConnection.cursor()
 
@@ -16,7 +16,7 @@ pronounceableLocally BOOL);"""
 # execute the statement
 cursor.execute(sql_command)
 
-entriesFile = open('/Users/jonotdonocoileain/Gaeilge/CollinsToCoileain-iOS/finishing.txt', 'r')
+entriesFile = open('/Users/jonotdonocoileain/Gaeilge/CollinsToCoileain-iOS/clean.txt', 'r')
 entriesLines = entriesFile.readlines()
 words = []
 

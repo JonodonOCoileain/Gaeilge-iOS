@@ -129,6 +129,7 @@ struct ContentView: View {
                 }
                 .navigationTitle("Gaeilge")
                 .searchable(text: $searchText)
+                .autocapitalization(.none)
                 .disableAutocorrection(true)
             }
             

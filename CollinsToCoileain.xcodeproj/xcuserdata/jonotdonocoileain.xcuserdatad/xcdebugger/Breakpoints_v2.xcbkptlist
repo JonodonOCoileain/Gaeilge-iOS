@@ -14,8 +14,8 @@
             filePath = "CollinsToCoileain/Persistence.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "145"
-            endingLineNumber = "145"
+            startingLineNumber = "159"
+            endingLineNumber = "159"
             landmarkName = "readDatabase()"
             landmarkType = "7">
             <Locations>
@@ -49,7 +49,38 @@
                   endingLineNumber = "146"
                   offsetFromSymbolStart = "8136">
                </Location>
+               <Location
+                  uuid = "0E9D25B9-4BA0-4A3A-BD3F-A6A41F2D9F70 - f19b80a167b1905c"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; () in CollinsToCoileain.PersistenceController.readDatabase() -&gt; ()"
+                  moduleName = "CollinsToCoileain"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jonotdonocoileain/Gaeilge/CollinsToCoileain-iOS/CollinsToCoileain/Persistence.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "157"
+                  endingLineNumber = "157"
+                  offsetFromSymbolStart = "7612">
+               </Location>
             </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "4CD45B6C-EFA9-4F39-BB16-2F19BF4E2EBF"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "CollinsToCoileain/Persistence.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "71"
+            endingLineNumber = "71"
+            landmarkName = "readDatabase()"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

@@ -11,6 +11,8 @@ import SQLite3
 import SQLite
 
 class PersistenceController {
+    static let dbName = "GaeilgeAppData"
+    static let dbExtension = ".sqlite"
     static let shared = PersistenceController()
     static let examples: [String: String] = ["a aithint" : "vb to recognise",
                                              "a dó" : "nmmm two",
@@ -44,7 +46,7 @@ class PersistenceController {
     func copyDataBase(path: String) -> String? {
         let fileManager = FileManager.default
         var dbPath = ""
-        let dbFileName = "entries.sqlite"
+        let dbFileName = PersistenceController.dbName + PersistenceController.dbExtension
 
         do {
             dbPath = try fileManager.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent(dbFileName).path
@@ -54,7 +56,7 @@ class PersistenceController {
         }
 
         if !fileManager.fileExists(atPath: dbPath) {
-            let dbResourcePath = Bundle.main.path(forResource: "entries", ofType: "sqlite")
+            let dbResourcePath = Bundle.main.path(forResource: PersistenceController.dbName, ofType: PersistenceController.dbExtension)
             do {
                 try fileManager.copyItem(atPath: dbResourcePath!, toPath: dbPath)
             } catch {
@@ -66,16 +68,28 @@ class PersistenceController {
     }
     
     func readDatabase() {
-        if UserDefaults.standard.bool(forKey: "v3") != true {
-            UserDefaults.standard.removeObject(forKey: "finishedLoading")
-            UserDefaults.standard.removeObject(forKey: "allFinishedLoading")
+        if UserDefaults.standard.integer(forKey: "v") != 5 {
+            if UserDefaults.standard.value(forKey: "v3") as? Bool == true {
+                deleteAll()
+                UserDefaults.standard.removeObject(forKey: "v3")
+            }
+            if UserDefaults.standard.value(forKey: "finishedLoading") as? Bool == true {
+                deleteAll()
+                UserDefaults.standard.removeObject(forKey: "finishedLoading")
+            }
+            if UserDefaults.standard.value(forKey: "allFinishedLoading") as? Bool == true {
+                deleteAll()
+                UserDefaults.standard.removeObject(forKey: "allFinishedLoading")
+            }
+            
+            
             let fm = FileManager.default
         
             DispatchQueue.global(qos: .userInteractive).async { [weak self] in
                 guard let self = self else { return }
                 
                 let viewContext = self.container.viewContext
-                let dbName = "entries.sqlite"
+                let dbName = PersistenceController.dbName + PersistenceController.dbExtension
                 let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
                 let dbPath = paths[0].path + "/" + dbName
                 guard let newPath = self.copyDataBase(path: dbPath) else {
@@ -111,13 +125,13 @@ class PersistenceController {
                                     } catch {
                                         print(error)
                                     }
-                                } else if let path = Bundle.main.path(forResource: array[1] ?? "", ofType: "mp3") {
+                                } else if let path = Bundle.main.path(forResource: array[1], ofType: "mp3") {
                                     do {
                                         let attr = try fm.attributesOfItem(atPath: path)
                                         if (attr[.size] as? Int ?? 0) > 150 {
                                             pronounceableLocally = "1"
                                         }
-                                        print("File size = \(attr[.size])")
+                                        print("File size = \(String(describing: attr[.size]))")
                                     } catch {
                                         print(error)
                                     }
@@ -136,8 +150,8 @@ class PersistenceController {
                             }
                         }
                         if word == "zú" {
-                            if UserDefaults.standard.bool(forKey: "v3") != true {
-                                UserDefaults.standard.set(true, forKey: "v3")
+                            if UserDefaults.standard.integer(forKey: "v") != 5 {
+                                UserDefaults.standard.set(5, forKey: "v")
                             }
                         }
                     }
