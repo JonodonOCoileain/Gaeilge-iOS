@@ -7,7 +7,8 @@
 
 import CoreData
 import SwiftUI
-
+import SQLite3
+import SQLite
 
 class PersistenceController {
     static let shared = PersistenceController()
@@ -28,7 +29,6 @@ class PersistenceController {
             newEntry.timestamp = Date()
             newEntry.filename = examples.keys.sorted()[i]
             newEntry.definition = examples[examples.keys.sorted()[i]]
-            newEntry.pronounceableLocally = true
         }
         do {
             try viewContext.save()
@@ -40,6 +40,113 @@ class PersistenceController {
         }
         return result
     }()
+    
+    func copyDataBase(path: String) -> String? {
+        let fileManager = FileManager.default
+        var dbPath = ""
+        let dbFileName = "entries.sqlite"
+
+        do {
+            dbPath = try fileManager.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent(dbFileName).path
+        } catch {
+            print(error.localizedDescription)
+            return nil
+        }
+
+        if !fileManager.fileExists(atPath: dbPath) {
+            let dbResourcePath = Bundle.main.path(forResource: "entries", ofType: "sqlite")
+            do {
+                try fileManager.copyItem(atPath: dbResourcePath!, toPath: dbPath)
+            } catch {
+                print(error.localizedDescription)
+                return nil
+            }
+        }
+        return dbPath
+    }
+    
+    func readDatabase() {
+        if UserDefaults.standard.bool(forKey: "v3") != true {
+            UserDefaults.standard.removeObject(forKey: "finishedLoading")
+            UserDefaults.standard.removeObject(forKey: "allFinishedLoading")
+            let fm = FileManager.default
+        
+            DispatchQueue.global(qos: .userInteractive).async { [weak self] in
+                guard let self = self else { return }
+                
+                let viewContext = self.container.viewContext
+                let dbName = "entries.sqlite"
+                let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+                let dbPath = paths[0].path + "/" + dbName
+                guard let newPath = self.copyDataBase(path: dbPath) else {
+                    return
+                }
+                do {
+                    let db = try Connection(newPath)
+                    let queryStatementString = "SELECT * FROM entries;"
+                    let response = try db.prepare(queryStatementString)
+                    for row in response {
+                        let word = "\(row[0] ?? 0)"
+                        let definition = "\(row[1] ?? 0)"
+                        let frequency = "\(row[2] ?? 0)"
+                        var pronounceableLocally = "\(row[3] ?? 0)"
+                        let fetchRequest = NSFetchRequest<Entry>(entityName: "Entry")
+                        fetchRequest.predicate = NSPredicate(format: "filename == %@", word)
+                        var result = [Entry]()
+                        
+                        do {
+                            result = try viewContext.fetch(fetchRequest)
+                        } catch {
+                            print(error)
+                        }
+                        if result.isEmpty {
+                            let array = word.components(separatedBy: " ")
+                            if array.count > 1 {
+                                if let path = Bundle.main.path(forResource: array.first ?? "", ofType: "mp3") {
+                                    do {
+                                        let attr = try fm.attributesOfItem(atPath: path)
+                                        if (attr[.size] as? Int ?? 0) > 150 {
+                                            pronounceableLocally = "1"
+                                        }
+                                    } catch {
+                                        print(error)
+                                    }
+                                } else if let path = Bundle.main.path(forResource: array[1] ?? "", ofType: "mp3") {
+                                    do {
+                                        let attr = try fm.attributesOfItem(atPath: path)
+                                        if (attr[.size] as? Int ?? 0) > 150 {
+                                            pronounceableLocally = "1"
+                                        }
+                                        print("File size = \(attr[.size])")
+                                    } catch {
+                                        print(error)
+                                    }
+                                }
+                            }
+                            do {
+                                let newEntry = Entry(context: viewContext)
+                                newEntry.timestamp = Date()
+                                newEntry.filename = word
+                                newEntry.frequency = Int64(frequency) ?? 0
+                                newEntry.definition = definition
+                                newEntry.pronounceableLocally = pronounceableLocally != "0"
+                                try viewContext.save()
+                            } catch {
+                                print(error)
+                            }
+                        }
+                        if word == "zú" {
+                            if UserDefaults.standard.bool(forKey: "v3") != true {
+                                UserDefaults.standard.set(true, forKey: "v3")
+                            }
+                        }
+                    }
+                } catch {
+                    print("Unable to connect to database.")
+                }
+            }
+        }
+    }
     
     var isEmpty: Bool {
         do {
@@ -105,204 +212,6 @@ class PersistenceController {
     
     func resetContext() {
         self.container.viewContext.reset()
-    }
-    
-    func readData() {
-        if UserDefaults.standard.bool(forKey: "finishedLoading") == true {
-            deleteAll()
-            return
-        }
-        
-        if count >= 1996 && definedCount >= 848 {
-            UserDefaults.standard.set(true, forKey: "finishedLoading")
-            return
-        }
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            guard let viewContext = self?.container.viewContext else { return }
-            if let fileURL = Bundle.main.url(forResource: "entries", withExtension: "csv") {
-                // make sure the file exists
-                guard FileManager.default.fileExists(atPath: fileURL.path) else {
-                    preconditionFailure("file expected at \(fileURL.path) is missing")
-                }
-                
-                do {
-                    let data = try String(contentsOfFile: fileURL.path, encoding: .utf8)
-                    let myStrings = data.components(separatedBy: .newlines)
-                    for string in myStrings {
-                        
-                        var components = string.components(separatedBy: ",")
-                        guard components.count > 1 else { continue }
-                        let word = components.removeLast()
-                        let frequencyRank = components.removeFirst()
-                        let pronounceableLocally = components.removeFirst() == "1"
-                        let definition = components.joined(separator: ",")
-                        
-                        let fetchRequest = NSFetchRequest<Entry>(entityName: "Entry")
-                        fetchRequest.predicate = NSPredicate(format: "filename == %@", word)
-                        // Helpers
-                        DispatchQueue.main.async {
-                            var result = [Entry]()
-                            
-                            do {
-                                result = try viewContext.fetch(fetchRequest)
-                            } catch {
-                                print(error)
-                            }
-                            
-                            if result.isEmpty && word.count > 0 {
-                                do {
-                                    let newEntry = Entry(context: viewContext)
-                                    newEntry.timestamp = Date()
-                                    newEntry.filename = word
-                                    if word == "an" {
-                                        newEntry.definition = "the"
-                                    }
-                                    if word == "is" {
-                                        newEntry.definition = "is"
-                                    }
-                                    if word == "bí" {
-                                        newEntry.definition = "be"
-                                    }
-                                    newEntry.frequency = Int64(frequencyRank) ?? 0
-                                    newEntry.definition = definition
-                                    newEntry.pronounceableLocally = pronounceableLocally
-                                    try viewContext.save()
-                                } catch {
-                                    print(error)
-                                }
-                            }
-                        }
-                    }
-                    
-                } catch {
-                    print(error)
-                }
-            }
-        }
-    }
-    
-    func allEntriesData() {
-        if countAr() > 1 {
-            deleteAll()
-            UserDefaults.standard.set(false, forKey: "finishedLoading")
-            UserDefaults.standard.removeObject(forKey: "finishedLoading")
-        }
-        
-        if UserDefaults.standard.bool(forKey: "finishedLoading") == true {
-            if UserDefaults.standard.bool(forKey: "allFinishedLoading") != true {
-                deleteAll()
-            }
-            UserDefaults.standard.set(false, forKey: "finishedLoading")
-            UserDefaults.standard.removeObject(forKey: "finishedLoading")
-            return
-        }
-        
-        if UserDefaults.standard.bool(forKey: "allFinishedLoading") == true {
-            return
-        }
-        
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            guard let viewContext = self?.container.viewContext else { return }
-            if let fileURL = Bundle.main.url(forResource: "allEntries", withExtension: "txt") {
-                // make sure the file exists
-                guard FileManager.default.fileExists(atPath: fileURL.path) else {
-                    preconditionFailure("file expected at \(fileURL.path) is missing")
-                }
-                
-                do {
-                    let data = try String(contentsOfFile: fileURL.path, encoding: .utf8)
-                    let myStrings = data.components(separatedBy: .newlines)
-                    for string in myStrings {
-                        guard string.count > 1 else { continue }
-                        var separated = string.components(separatedBy: " ")
-                        
-                        let fileExists = separated.removeLast()
-                        let occurenceDenominator = Int64(separated.removeLast())
-                        
-                        var word: String?
-                        if let firstIndexOfSeparator = separated.firstIndex(where: { PersistenceController.partOfSpeechPlaceholders.contains($0) }) {
-                            let separator = separated[firstIndexOfSeparator]
-                            word = string.components(separatedBy: separator).first?.trimmingCharacters(in: .whitespacesAndNewlines)
-                        } else {
-                            word = separated.first?.trimmingCharacters(in: .whitespacesAndNewlines)
-                        }
-                        guard let word = word else { continue }
-                        
-                        for component in separated {
-                            if word.contains(component) {
-                                separated.removeFirst()
-                            } else {
-                                break
-                            }
-                        }
-                        var definition = separated.joined(separator: " ")
-                        
-                        let fetchRequest = NSFetchRequest<Entry>(entityName: "Entry")
-                        fetchRequest.predicate = NSPredicate(format: "filename == %@", word)
-                        // Helpers
-                        DispatchQueue.main.async {
-                            var result = [Entry]()
-                            
-                            do {
-                                result = try viewContext.fetch(fetchRequest)
-                            } catch {
-                                print(error)
-                            }
-                            
-                            if word == "an" {
-                                definition = "the"
-                            } else if word == "is" {
-                                definition = "is"
-                            } else if word == "bí" {
-                                definition = "be"
-                            } else if word == "agus" {
-                                definition = "and"
-                            }
-                            
-                            if result.isEmpty && word.count > 0 {
-                                do {
-                                    let newEntry = Entry(context: viewContext)
-                                    newEntry.timestamp = Date()
-                                    newEntry.filename = word
-                                    newEntry.frequency = occurenceDenominator ?? 400000
-                                    newEntry.definition = definition
-                                    newEntry.pronounceableLocally = fileExists == "1"
-                                    try viewContext.save()
-                                    
-                                    if string == "facs 350594 1" {
-                                        UserDefaults.standard.set(true, forKey: "allFinishedLoading")
-                                    }
-                                } catch {
-                                    print(error)
-                                }
-                            } else if word.count > 0, result.isEmpty == false, let entry = result.first {
-                                do {
-                                    if let occurenceDenominator = occurenceDenominator, entry.frequency > occurenceDenominator {
-                                        entry.frequency = occurenceDenominator
-                                    }
-                                    if entry.definition == nil {
-                                        entry.definition = definition
-                                    }
-                                    if fileExists == "1" {
-                                        entry.pronounceableLocally = true
-                                    }
-                                    try viewContext.save()
-                                    if string == "facs 350594 1" {
-                                        UserDefaults.standard.set(true, forKey: "allFinishedLoading")
-                                    }
-                                } catch {
-                                    print(error)
-                                }
-                            }
-                            
-                        }
-                    }
-                    
-                } catch {
-                    print(error)
-                }
-            }
-        }
     }
     
     let container: NSPersistentCloudKitContainer

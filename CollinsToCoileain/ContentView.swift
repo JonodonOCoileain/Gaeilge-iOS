@@ -5,7 +5,6 @@
 //  Created by Jónótdón Ó Coileáin on 5/21/23.
 //
 
-import AVKit
 import SwiftUI
 import CoreData
 #if os(OSX)
@@ -40,31 +39,67 @@ struct ContentView: View {
                                     Spacer()
                                     Button("fhuaimniú") {
                                         guard let filename = Entry.filename, filename.count > 0 else { return }
-                                        DispatchQueue.global(qos: .userInitiated).async {
-                                            if let sound = Bundle.main.path(forResource: Entry.filename, ofType: "mp3") {
-                                                do {
-                                                    let fm = FileManager.default
-                                                    let newPath = URL.documents.appending(path: "file.mp3")
-                                                    if fm.fileExists(atPath: newPath.path) {
-                                                        try fm.removeItem(at: newPath)
-                                                    }
-                                                    try fm.copyItem(atPath: sound, toPath: newPath.path)
-                                                    self.player.playLocal(word: newPath)
-                                                } catch {
-                                                    print(error)
+                                        //DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+                                        //  guard let self = self else { return }
+                                        var secondCheckArray = Entry.filename?.components(separatedBy: " ")
+                                        if let sound = Bundle.main.path(forResource: Entry.filename, ofType: "mp3") {
+                                            do {
+                                                let fm = FileManager.default
+                                                let newPath = URL.documents.appending(path: "file.mp3")
+                                                if fm.fileExists(atPath: newPath.path) {
+                                                    try fm.removeItem(at: newPath)
                                                 }
-                                            } else {
-                                                let arrayOfWords = filename.components(separatedBy: " ")
-                                                self.player.playOnWebsite(phrase: arrayOfWords)
+                                                try fm.copyItem(atPath: sound, toPath: newPath.path)
+                                                self.player.playLocal(word: newPath)
+                                            } catch {
+                                                print(error)
                                             }
+                                        } else if (secondCheckArray?.count ?? 0) > 1, let sound1 = Bundle.main.path(forResource: secondCheckArray?[0] ?? "", ofType: "mp3") {
+                                            
+                                            secondCheckArray?.removeFirst()
+                                            do {
+                                                let fm = FileManager.default
+                                                let newPath = URL.documents.appending(path: "file.mp3")
+                                                
+                                                if fm.fileExists(atPath: newPath.path) {
+                                                    try fm.removeItem(at: newPath)
+                                                }
+                                                try fm.copyItem(atPath: sound1, toPath: newPath.path)
+                                                self.player.playLocal(word: newPath)
+                                            } catch {
+                                                print(error)
+                                            }
+                                            
+                                            guard let secondCheckArray = secondCheckArray else { return }
+                                            for (index, word) in secondCheckArray.enumerated() {
+                                                if let nextSound = Bundle.main.path(forResource: word, ofType: "mp3") {
+                                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.45 * Double(index), execute: {
+                                                        do {
+                                                            let fm = FileManager.default
+                                                            let newPath = URL.documents.appending(path: "file.mp3")
+                                                            if fm.fileExists(atPath: newPath.path) {
+                                                                try fm.removeItem(at: newPath)
+                                                            }
+                                                            try fm.copyItem(atPath: nextSound, toPath: newPath.path)
+                                                            self.player.playLocal(word: newPath)
+                                                        } catch {
+                                                            print(error)
+                                                        }
+                                                    })
+                                                }
+                                            }
+                                        } else {
+                                            let arrayOfWords = filename.components(separatedBy: " ")
+                                            self.player.playOnWebsite(phrase: arrayOfWords)
                                         }
+                                        //}
                                     }
                                     .padding()
                                     .background(Color(red: 0.2, green: 0.1, blue: 0.345789))
                                     .foregroundColor(.white)
                                     .clipShape(Capsule())
                                     .modifier(DarkModeViewModifier())
-                                    .opacity(Entry.pronounceableLocally ? 1.0 : 0.0001)
+                                    //.opacity(Entry.pronounceableLocally ? 1.0 : 0.0001)
                                 }
                                 .swipeActions {
                                     if #available(OSX 10.14, *) {
@@ -101,7 +136,7 @@ struct ContentView: View {
             .environment(\.managedObjectContext, persistenceController.container.viewContext)
             .onAppear() {
                 DispatchQueue.global(qos: .userInitiated).async {
-                    persistenceController.allEntriesData()
+                    persistenceController.readDatabase()
                 }
             }
             .navigationViewStyle(StackNavigationViewStyle())
@@ -152,37 +187,6 @@ private let EntryFormatter: DateFormatter = {
     formatter.timeStyle = .medium
     return formatter
 }()
-
-class Player: ObservableObject {
-    private var audioPlayer: AVAudioPlayer?
-    private var player: AVPlayer?
-    
-    func playLocal(word: URL) {
-        if audioPlayer?.isPlaying != true {
-            do {
-                self.audioPlayer = try AVAudioPlayer(contentsOf: word)
-                self.audioPlayer?.volume = 1.0
-                self.audioPlayer?.play()
-            } catch {
-                print(error)
-            }
-        }
-    }
-    
-    func playOnWebsite(phrase: [String]) {
-        var items: [AVPlayerItem] = []
-        for word in phrase {
-            let urlString = "https://www.teanglann.ie/CanC/" + word
-            if let url = URL(string: urlString) {
-                let playerItem = AVPlayerItem(url: url)
-                items.append(playerItem)
-            }
-        }
-        self.player = AVQueuePlayer(items: items)
-        self.player?.volume = 1.0
-        self.player?.play()
-    }
-}
 
 extension URL {
     static var documents: URL {

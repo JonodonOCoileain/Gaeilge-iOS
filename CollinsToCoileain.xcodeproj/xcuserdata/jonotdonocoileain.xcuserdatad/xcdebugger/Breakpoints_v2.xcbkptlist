@@ -7,255 +7,47 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "EB5B07B0-F769-49A4-8750-B923846C1387"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "CollinsToCoileain/ContentView.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "164"
-            endingLineNumber = "164"
-            landmarkName = "playLocal(word:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "EB5B07B0-F769-49A4-8750-B923846C1387 - fa9fa710899b3346"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "CollinsToCoileain.Player.playLocal(word: Foundation.URL) -&gt; ()"
-                  moduleName = "CollinsToCoileain"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/jonotdonocoileain/Gaeilge/CollinsToCoileain/CollinsToCoileain/ContentView.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "160"
-                  endingLineNumber = "160"
-                  offsetFromSymbolStart = "796">
-               </Location>
-               <Location
-                  uuid = "EB5B07B0-F769-49A4-8750-B923846C1387 - fa9fa710899b3346"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "CollinsToCoileain.Player.playLocal(word: Foundation.URL) -&gt; ()"
-                  moduleName = "CollinsToCoileain"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/jonotdonocoileain/Gaeilge/CollinsToCoileain/CollinsToCoileain/ContentView.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "160"
-                  endingLineNumber = "160"
-                  offsetFromSymbolStart = "824">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "5A53FD57-E3EF-416B-826A-1EE3E6058F91"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "CollinsToCoileain/ContentView.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "167"
-            endingLineNumber = "167"
-            landmarkName = "playLocal(word:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "5A53FD57-E3EF-416B-826A-1EE3E6058F91 - fa9fa710899b33e5"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "CollinsToCoileain.Player.playLocal(word: Foundation.URL) -&gt; ()"
-                  moduleName = "CollinsToCoileain"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/jonotdonocoileain/Gaeilge/CollinsToCoileain/CollinsToCoileain/ContentView.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "163"
-                  endingLineNumber = "163"
-                  offsetFromSymbolStart = "1284">
-               </Location>
-               <Location
-                  uuid = "5A53FD57-E3EF-416B-826A-1EE3E6058F91 - fa9fa710899b33e5"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "CollinsToCoileain.Player.playLocal(word: Foundation.URL) -&gt; ()"
-                  moduleName = "CollinsToCoileain"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/jonotdonocoileain/Gaeilge/CollinsToCoileain/CollinsToCoileain/ContentView.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "163"
-                  endingLineNumber = "163"
-                  offsetFromSymbolStart = "1312">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "A028C65E-3761-4F43-9436-2E5DEE897F5E"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "CollinsToCoileain/ContentView.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "46"
-            endingLineNumber = "46"
-            landmarkName = "body"
-            landmarkType = "24">
-            <Locations>
-               <Location
-                  uuid = "A028C65E-3761-4F43-9436-2E5DEE897F5E - 1781ff21dc444fd7"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #2 () -&gt; () in closure #1 () -&gt; SwiftUI.TupleView&lt;(SwiftUI.VStack&lt;SwiftUI.TupleView&lt;(SwiftUI.Text, &lt;&lt;opaque return type of SwiftUI.View.padding(SwiftUI.EdgeInsets) -&gt; some&gt;&gt;.0)&gt;&gt;, SwiftUI.Spacer, &lt;&lt;opaque return type of SwiftUI.View.opacity(Swift.Double) -&gt; some&gt;&gt;.0)&gt; in closure #1 (CollinsToCoileain.Entry) -&gt; Swift.Optional&lt;&lt;&lt;opaque return type of SwiftUI.View.padding(SwiftUI.EdgeInsets) -&gt; some&gt;&gt;.0&gt; in closure #1 () -&gt; SwiftUI.ForEach&lt;SwiftUI.FetchedResults&lt;CollinsToCoileain.Entry&gt;, CollinsToCoileain.Entry, Swift.Optional&lt;&lt;&lt;opaque return type of SwiftUI.View.padding(SwiftUI.EdgeInsets) -&gt; some&gt;&gt;.0&gt;&gt; in closure #1 () -&gt; &lt;&lt;opaque return type of SwiftUI.View.disableAutocorrection(Swift.Optional&lt;Swift.Bool&gt;) -&gt; some&gt;&gt;.0 in closure #1 () -&gt; SwiftUI.ZStack&lt;&lt;&lt;opaque return type of SwiftUI.View.disableAutocorrection(Swift.Optional&lt;Swift.Bool&gt;) -&gt; some&gt;&gt;.0&gt; in CollinsToCoileain.ContentView.body.getter : some"
-                  moduleName = "CollinsToCoileain"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/jonotdonocoileain/Gaeilge/CollinsToCoileain/CollinsToCoileain/ContentView.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "45"
-                  endingLineNumber = "45"
-                  offsetFromSymbolStart = "1796">
-               </Location>
-               <Location
-                  uuid = "A028C65E-3761-4F43-9436-2E5DEE897F5E - 1781ff21dc444fd7"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #2 () -&gt; () in closure #1 () -&gt; SwiftUI.TupleView&lt;(SwiftUI.VStack&lt;SwiftUI.TupleView&lt;(SwiftUI.Text, &lt;&lt;opaque return type of SwiftUI.View.padding(SwiftUI.EdgeInsets) -&gt; some&gt;&gt;.0)&gt;&gt;, SwiftUI.Spacer, &lt;&lt;opaque return type of SwiftUI.View.opacity(Swift.Double) -&gt; some&gt;&gt;.0)&gt; in closure #1 (CollinsToCoileain.Entry) -&gt; Swift.Optional&lt;&lt;&lt;opaque return type of SwiftUI.View.padding(SwiftUI.EdgeInsets) -&gt; some&gt;&gt;.0&gt; in closure #1 () -&gt; SwiftUI.ForEach&lt;SwiftUI.FetchedResults&lt;CollinsToCoileain.Entry&gt;, CollinsToCoileain.Entry, Swift.Optional&lt;&lt;&lt;opaque return type of SwiftUI.View.padding(SwiftUI.EdgeInsets) -&gt; some&gt;&gt;.0&gt;&gt; in closure #1 () -&gt; &lt;&lt;opaque return type of SwiftUI.View.disableAutocorrection(Swift.Optional&lt;Swift.Bool&gt;) -&gt; some&gt;&gt;.0 in closure #1 () -&gt; SwiftUI.ZStack&lt;&lt;&lt;opaque return type of SwiftUI.View.disableAutocorrection(Swift.Optional&lt;Swift.Bool&gt;) -&gt; some&gt;&gt;.0&gt; in CollinsToCoileain.ContentView.body.getter : some"
-                  moduleName = "CollinsToCoileain"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/jonotdonocoileain/Gaeilge/CollinsToCoileain/CollinsToCoileain/ContentView.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "45"
-                  endingLineNumber = "45"
-                  offsetFromSymbolStart = "1912">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "8B483CB3-D13F-45C5-935A-C1AB7B816B12"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "CollinsToCoileain/ContentView.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "58"
-            endingLineNumber = "58"
-            landmarkName = "body"
-            landmarkType = "24">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "E3511978-480B-4CAE-A549-D974159844D3"
+            uuid = "0E9D25B9-4BA0-4A3A-BD3F-A6A41F2D9F70"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "CollinsToCoileain/Persistence.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "136"
-            endingLineNumber = "136"
-            landmarkName = "readData()"
+            startingLineNumber = "145"
+            endingLineNumber = "145"
+            landmarkName = "readDatabase()"
             landmarkType = "7">
             <Locations>
                <Location
-                  uuid = "E3511978-480B-4CAE-A549-D974159844D3 - e705a5716d7bdb0e"
+                  uuid = "0E9D25B9-4BA0-4A3A-BD3F-A6A41F2D9F70 - f19b80a167b192e9"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "closure #1 () -&gt; () in CollinsToCoileain.PersistenceController.readData() -&gt; ()"
+                  symbolName = "closure #1 () -&gt; () in CollinsToCoileain.PersistenceController.readDatabase() -&gt; ()"
                   moduleName = "CollinsToCoileain"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/jonotdonocoileain/Gaeilge/CollinsToCoileain/CollinsToCoileain/Persistence.swift"
+                  urlString = "file:///Users/jonotdonocoileain/Gaeilge/CollinsToCoileain-iOS/CollinsToCoileain/Persistence.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "194"
-                  endingLineNumber = "194"
-                  offsetFromSymbolStart = "2268">
+                  startingLineNumber = "138"
+                  endingLineNumber = "138"
+                  offsetFromSymbolStart = "6436">
                </Location>
                <Location
-                  uuid = "E3511978-480B-4CAE-A549-D974159844D3 - e705a5716d7be080"
+                  uuid = "0E9D25B9-4BA0-4A3A-BD3F-A6A41F2D9F70 - f19b80a167b191e1"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "closure #1 () -&gt; () in CollinsToCoileain.PersistenceController.readData() -&gt; ()"
+                  symbolName = "closure #1 () -&gt; () in CollinsToCoileain.PersistenceController.readDatabase() -&gt; ()"
                   moduleName = "CollinsToCoileain"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/jonotdonocoileain/Gaeilge/CollinsToCoileain/CollinsToCoileain/Persistence.swift"
+                  urlString = "file:///Users/jonotdonocoileain/Gaeilge/CollinsToCoileain-iOS/CollinsToCoileain/Persistence.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "136"
-                  endingLineNumber = "136"
-                  offsetFromSymbolStart = "2352">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "6EE69488-9642-4788-AAE6-2E09610BA94B"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "CollinsToCoileain/Persistence.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "94"
-            endingLineNumber = "94"
-            landmarkName = "deleteAll()"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "6EE69488-9642-4788-AAE6-2E09610BA94B - 785ab0cc18b39442"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "CollinsToCoileain.PersistenceController.deleteAll() -&gt; ()"
-                  moduleName = "CollinsToCoileain"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/jonotdonocoileain/Gaeilge/CollinsToCoileain/CollinsToCoileain/Persistence.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "153"
-                  endingLineNumber = "153"
-                  offsetFromSymbolStart = "84">
-               </Location>
-               <Location
-                  uuid = "6EE69488-9642-4788-AAE6-2E09610BA94B - 785ab0cc18b39cdf"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "CollinsToCoileain.PersistenceController.deleteAll() -&gt; ()"
-                  moduleName = "CollinsToCoileain"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/jonotdonocoileain/Gaeilge/CollinsToCoileain/CollinsToCoileain/Persistence.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "94"
-                  endingLineNumber = "94"
-                  offsetFromSymbolStart = "84">
+                  startingLineNumber = "146"
+                  endingLineNumber = "146"
+                  offsetFromSymbolStart = "8136">
                </Location>
             </Locations>
          </BreakpointContent>
